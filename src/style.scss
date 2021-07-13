@@ -1,0 +1,141 @@
+.login {
+  display: none;
+}
+.top {
+  height: 120px;
+  width: 100%;
+  background-color: #ec2309;
+  position: relative;
+  margin-top: -60px;
+}
+.bot {
+  height: 100px;
+  width: 100%;
+  background-color: #ec2309;
+  margin-top: 520px;
+}
+.table{
+  width:60px
+}
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 90%;
+  height: 540px;
+  position: absolute;
+  background-color: #e5e5e5;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 17px;
+  margin: -13px 5%;
+}
+input {
+  width: 385px;
+  height: 55px;
+  border-radius: 10px;
+  border: 1px solid #e0d7d7;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+.forget-pass {
+  margin-left: 142px;
+  margin-top: 0px;
+  color: #5a5757;
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 20px;
+}
+.submit {
+  width: 405px;
+  height: 55px;
+  padding: 10px;
+  background: #fddb3a;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  color: white;
+}
+.spinner {
+  z-index: 10;
+}
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error {
+  color: red;
+  transform: translate(-0px, -12px);
+}
+.input {
+  height: 30px;
+}
+.validate {
+  display: flex;
+  justify-content: start;
+  margin-left: 5px;
+}
+.user {
+  color: white;
+}
+.route {
+  display: flex;
+  justify-content: space-between;
+}
+.icon {
+  height: 50px;
+  width: 50px;
+}
+.small {
+  position: absolute;
+  margin-right: 300px;
+  margin-top: -6px;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+.profile {
+  text-decoration: none;
+}
+.food {
+  height: 180px;
+  width: 200px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  .img_list {
+    height: 80px;
+    width: 140px;
+  }
+}
+.img_detail {
+  width: 400px;
+  height: 200px;
+}
+.number {
+  height: 21px;
+  width: 21px;
+  background-color: red;
+  border-radius: 50%;
+  font-size: 12px;
+  transform: translate(-17px, 18px);
+  text-align: center;
+}
+.img_cart {
+  height: 50px;
+  width: 60px;
+}
+.input {
+  background-color: #e0d7d7;
+  width: 50px;
+  height: 30px;
+}
+.icon_delete {
+  height: 25x;
+  width: 25px;
+  cursor: pointer;
+}
