@@ -48,13 +48,14 @@
       bg-variant="dark"
       text-variant="light"
       right
+      backdrop
       width="550px"
       shadow
     >
       <template #footer="{}">
         <div class="d-flex bg-dark text-light align-items-center px-3 py-2">
           <strong class="mr-auto">Tổng</strong>
-          <strong class="mr-auto">{{ items.total }}</strong>
+          <strong class="mr-auto">{{ items ? items.total : 0 }}</strong>
           <b-button size="sm" variant="info" v-b-modal.modal-1
             >Thanh Toán</b-button
           >
@@ -68,7 +69,7 @@
           <b-col><b>Đơn giá</b></b-col>
           <b-col></b-col>
         </b-row>
-        <div v-for="item in items.items" :key="item">
+        <div v-for="item in items ? items.items : []" :key="item">
           <b-row>
             <b-col>{{ item.foodName }}</b-col>
             <b-col
@@ -97,6 +98,7 @@
       id="sidebar-1"
       title="Thông tin cá nhân"
       shadow
+      backdrop
       @shown="showInfo"
     >
       <template #footer="{}">
@@ -150,7 +152,7 @@
     </b-sidebar>
     <b-modal id="modal-1" title="Xác nhận thanh toán" @ok="handleOk">
       <p class="my-4">
-        Bạn sẽ thanh toán hóa đơn với số tiền {{ items.total }} ?
+        Bạn sẽ thanh toán hóa đơn với số tiền {{ items?items.total:'' }} ?
       </p>
     </b-modal>
     <b-sidebar
@@ -158,6 +160,7 @@
       title="Sidebar"
       bg-variant="dark"
       width="450px"
+      backdrop
       text-variant="light"
       shadow
     >
@@ -214,13 +217,15 @@ export default {
         this.$store.dispatch("getNumQuan");
       });
     },
-    deleteFood(foodId) {
-      HTTP.delete("/order/delete", {
-        foodId,
-      }).then(() => {
+    async deleteFood(foodId) {
+      const data = {
+        foodId: foodId,
+      };
+      await this.$store.dispatch("deleteBills", data);
+      setTimeout(() => {
         this.showCart();
         this.$store.dispatch("getNumQuan");
-      });
+      }, 100);
     },
     detail(orderId) {
       this.$router.push(`detail/${orderId}`);
@@ -240,6 +245,9 @@ export default {
       });
     },
     handleOk() {
+      if (this.$store.state.food.Quanty === 0) {
+        return alert("Vui lòng chọn ít nhất 1 món ăn");
+      }
       HTTP.post("/order/confirm", {
         orderId: this.items.items[0].orderId,
         status: "CONFIRM",

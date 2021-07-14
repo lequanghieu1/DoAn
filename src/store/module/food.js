@@ -19,14 +19,24 @@ const actions = {
         }
         );
     },
+    async searchfood({ commit }, data) {
+        HTTP.post(`/food/search`, { foodName: data }).then((res) => {
+            commit('SET_FOODS', res.data.data.slice(0, 12))
+        });
+    },
     async getNumQuan({ commit }) {
         await HTTP.get("/order/count/shopping-cart").then((res) => {
             commit('SET_NUM', res.data.data.total)
-        });
+        }).catch(() => { commit('SET_NUM', 0) });
     },
     async listBills({ commit }) {
         await HTTP.get(`/order/user/list`)
             .then((res) => { commit('SET_BILLS', res.data.data) });
+    },
+    deleteBills({ commit }, data) {
+        HTTP.delete("/order/delete", { data: data }).then(() => {
+            commit()
+        });
     },
 }
 const mutations = {
