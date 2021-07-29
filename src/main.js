@@ -42,6 +42,19 @@ const router = new VueRouter({
   mode: 'history',
   routes
 })
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem("token") == null) {
+      next({
+        path: "/"
+      });
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
+});
 
 new Vue({
   render: h => h(App),

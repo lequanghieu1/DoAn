@@ -68,12 +68,13 @@ export default {
       })
         .then((res) => {
           if (res.data.code === 200) {
-            this.$router.push("/user");
             localStorage.setItem("token", res.data.data.token);
+            this.$router.push("/user");
+            location.reload()
           }
         })
         .catch(() => {
-           alert("Đăng nhập thất bại");
+          alert("Đăng nhập thất bại");
         });
     },
     register() {
