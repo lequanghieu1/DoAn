@@ -1,17 +1,24 @@
-import { HTTP } from "../../API/http_common";
 const state = {
-    users: [],
+    users: {},
     acc_present: {},
     spinner: false,
     is_login: false,
+    addEdit: null,
+    listKH:[]
+
 }
 const getters = {
     loading: state => state.spinner
 }
 const actions = {
-    async loadUsers({ commit }) {
-        await HTTP.get(`users`)
-            .then((res) => { commit('SET_MANAGERS', res.data) });
+    loadUsers({ commit }, data) {
+        commit('SET_MANAGERS', data);
+    },
+    setActions({ commit }, data) {
+        commit('SET_ACTIONS', data);
+    },
+    setCus({ commit }, data) {
+        commit('SET_CUS', data);
     },
 }
 const mutations = {
@@ -21,6 +28,12 @@ const mutations = {
     },
     LOADING(state, status) {
         state.users = status
+    },
+    SET_ACTIONS(state, action) {
+        state.addEdit = action
+    },
+    SET_CUS(state, cus) {
+        state.listKH = cus
     },
 }
 

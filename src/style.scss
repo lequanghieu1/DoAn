@@ -14,8 +14,8 @@
   background-color: #ec2309;
   margin-top: 520px;
 }
-.table{
-  width:60px
+.table {
+  width: 60px;
 }
 .main {
   display: flex;
@@ -102,7 +102,7 @@ input {
   text-decoration: none;
 }
 .food {
-  height: 180px;
+  height: 200px;
   width: 200px;
   border: 1px solid black;
   border-radius: 10px;
@@ -138,4 +138,15 @@ input {
   height: 25x;
   width: 25px;
   cursor: pointer;
+}
+.note {
+  color: red;
+  font-size: 13px;
+}
+.icon-note{
+  transform:translateY(-20px)
+}
+.add{
+  transform:translate(460px, 118px);
+  height: 10px;
 }

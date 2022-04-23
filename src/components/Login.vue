@@ -9,8 +9,8 @@
             <form>
               <v-text-field
                 v-model="name"
-                :error-messages="emailErrors"
-                label="Email"
+                :error-messages="userErrors"
+                label="Username"
                 required
                 @input="delayTouch($v.name)"
                 @blur="$v.name.$touch()"
@@ -29,6 +29,7 @@
           <v-card-actions>
             <v-btn color="info" @click="submit">Đăng nhập</v-btn>
             <v-btn color="success" @click="register">Đăng ký </v-btn>
+            <v-btn color="blue-grey" @click="continues">tiếp tục lướt web </v-btn>
           </v-card-actions>
         </v-card>
         <spinner v-if="this.$store.state.users.is_login" />
@@ -42,13 +43,13 @@
 import spinner from "./spinner";
 import { validationMixin } from "vuelidate";
 const touchMap = new WeakMap();
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { required, minLength } from "vuelidate/lib/validators";
 import { HTTP } from "../API/http_common";
 export default {
   components: { spinner },
   mixins: [validationMixin],
   validations: {
-    name: { required, email },
+    name: { required },
     pass: { required, minLength: minLength(3) },
   },
 
@@ -61,16 +62,18 @@ export default {
       touchMap.set($v, setTimeout($v.$touch, 1000));
     },
     submit() {
-      this.$v.$touch();
-      HTTP.post("/user/sign-in", {
-        email: this.name,
+      HTTP.post("/login", {
+        username: this.name,
         password: this.pass,
       })
         .then((res) => {
-          if (res.data.code === 200) {
-            localStorage.setItem("token", res.data.data.token);
-            this.$router.push("/user");
-            location.reload()
+          if (res.status === 200) {
+            localStorage.setItem("token", JSON.stringify(res.data));
+            if (res.data.quyen.maquyen === 2) {
+              this.$router.push("/user");
+            } else {
+              this.$router.push("/admin");
+            }
           }
         })
         .catch(() => {
@@ -79,6 +82,9 @@ export default {
     },
     register() {
       this.$router.push("/register");
+    },
+    continues() {
+      this.$router.push("/user");
     },
   },
   data() {
@@ -97,11 +103,10 @@ export default {
       !this.$v.pass.required && errors.push("password is required.");
       return errors;
     },
-    emailErrors() {
+    userErrors() {
       const errors = [];
       if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.email && errors.push("Must be valid e-mail");
-      !this.$v.name.required && errors.push("E-mail is required");
+      !this.$v.name.required && errors.push("Username is required");
       return errors;
     },
   },

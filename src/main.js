@@ -14,6 +14,10 @@ import vuetify from './plugins/vuetify'
 import Vuex from 'vuex';
 import store from './store/store'
 import axios from 'axios'
+import VueSidebarMenu from 'vue-sidebar-menu'
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+Vue.use(VueSidebarMenu)
+
 Vue.use(Vuex);
 Vue.use(Vuelidate)
 Vue.use(VueRouter)
@@ -42,19 +46,19 @@ const router = new VueRouter({
   mode: 'history',
   routes
 })
-router.beforeEach(async (to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (localStorage.getItem("token") == null) {
-      next({
-        path: "/"
-      });
-    } else {
-      next()
-    }
-  } else {
-    next()
-  }
-});
+// router.beforeEach(async (to, from, next) => {
+//   if (to.matched.some(record => record.meta.requiresAuth)) {
+//     if (!localStorage.getItem("token")) {
+//       next({
+//         path: "/"
+//       });
+//     } else {
+//       next()
+//     }
+//   } else {
+//     next()
+//   }
+// });
 
 new Vue({
   render: h => h(App),

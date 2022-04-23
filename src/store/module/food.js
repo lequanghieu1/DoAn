@@ -2,7 +2,9 @@ import { HTTP } from "../../API/http_common";
 const state = {
     foods: [],
     Quanty: 0,
-    bill: []
+    oldQuan: 0,
+    bill: [],
+    status: [{ value: 0, text: 'Chờ xác nhận', color: 'warning' }, { value: 1, text: 'Đã xác nhận', color: 'info' }, { value: 2, text: 'Xuất kho', color: 'primary' }, { value: 3, text: 'Đã giao', color: 'success' }, { value: 4, text: 'Đã hủy', color: 'danger' }]
 
 }
 const getters = {
@@ -10,12 +12,12 @@ const getters = {
 }
 const actions = {
     async listFood({ commit }, data) {
-        await HTTP.get(`/cate/food/${data}/0/12`)
-            .then((res) => { commit('SET_FOODS', res.data.data) });
+        await HTTP.get(`/sanpham/danhmuc/${data}`)
+            .then((res) => { commit('SET_FOODS', res.data) });
     },
-    async getfood({ commit }, data) {
-        await HTTP.get(`/food/list/${data}/12`).then((res) => {
-            commit('SET_FOODS', res.data.data)
+    async getfood({ commit }) {
+        await HTTP.get(`/sanpham`).then((res) => {
+            commit('SET_FOODS', res.data)
         }
         );
     },
@@ -24,17 +26,17 @@ const actions = {
             commit('SET_FOODS', res.data.data.slice(0, 12))
         });
     },
-    async getNumQuan({ commit }) {
-        await HTTP.get("/order/count/shopping-cart").then((res) => {
-            commit('SET_NUM', res.data.data.total)
+    async getNumQuan({ commit }, makh) {
+        await HTTP.get(`/numcart/${makh}`).then((res) => {
+            commit('SET_NUM', res.data)
         }).catch(() => { commit('SET_NUM', 0) });
     },
-    async listBills({ commit }) {
-        await HTTP.get(`/order/user/list`)
-            .then((res) => { commit('SET_BILLS', res.data.data) });
+    async listBills({ commit }, makh) {
+        await HTTP.get(`/donhang/${makh}`)
+            .then((res) => { commit('SET_BILLS', res.data) });
     },
     deleteBills({ commit }, data) {
-        HTTP.delete("/order/delete", { data: data }).then(() => {
+        HTTP.delete(`/giohang/${data.makh}/${data.foodId}`).then(() => {
             commit()
         });
     },
@@ -45,6 +47,7 @@ const mutations = {
     },
     SET_NUM(state, num) {
         state.Quanty = num
+        state.oldQuan = num
     },
     SET_BILLS(state, bill) {
         state.bill = bill

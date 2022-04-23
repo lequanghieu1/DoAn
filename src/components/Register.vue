@@ -8,12 +8,36 @@
           <v-card-text>
             <form>
               <v-text-field
-                v-model="name"
+                v-model="email"
                 :error-messages="emailErrors"
                 label="Email"
                 required
-                @input="delayTouch($v.name)"
-                @blur="$v.name.$touch()"
+                @input="delayTouch($v.email)"
+                @blur="$v.email.$touch()"
+              ></v-text-field>
+              <v-text-field
+                v-model="userName"
+                :error-messages="requireErrors($v.userName)"
+                label="User Name"
+                required
+                @input="delayTouch($v.userName)"
+                @blur="$v.userName.$touch()"
+              ></v-text-field>
+              <v-text-field
+                v-model="first"
+                :error-messages="requireErrors($v.first)"
+                label="First Name"
+                required
+                @input="delayTouch($v.first)"
+                @blur="$v.first.$touch()"
+              ></v-text-field>
+              <v-text-field
+                v-model="last"
+                :error-messages="requireErrors($v.last)"
+                label="Last Name"
+                required
+                @input="delayTouch($v.last)"
+                @blur="$v.last.$touch()"
               ></v-text-field>
               <v-text-field
                 v-model="pass"
@@ -26,28 +50,28 @@
               ></v-text-field>
               <v-text-field
                 v-model="phone"
-                :error-messages="phoneErrors"
+                :error-messages="requireErrors($v.phone)"
                 label="Phone"
                 required
                 @input="delayTouch($v.phone)"
                 @blur="$v.phone.$touch()"
               ></v-text-field>
-              <v-text-field
-                v-model="full"
-                :error-messages="fullErrors"
-                label="Fullname"
-                required
-                @input="delayTouch($v.full)"
-                @blur="$v.full.$touch()"
-              ></v-text-field>
+
               <v-text-field
                 v-model="address"
-                :error-messages="addressErrors"
+                :error-messages="requireErrors($v.address)"
                 label="Address"
                 required
                 @input="delayTouch($v.address)"
                 @blur="$v.address.$touch()"
               ></v-text-field>
+              <v-radio-group v-model="gender" row>
+                <template v-slot:label>
+                  <div>Gender :</div>
+                </template>
+                <v-radio label="Male" :value="0"></v-radio>
+                <v-radio label="Female" :value="1"></v-radio>
+              </v-radio-group>
             </form>
           </v-card-text>
           <v-card-actions>
@@ -72,10 +96,12 @@ export default {
   components: { spinner },
   mixins: [validationMixin],
   validations: {
-    name: { required, email },
+    email: { required, email },
     pass: { required, minLength: minLength(3) },
     phone: { required },
-    full: { required },
+    first: { required },
+    last: { required },
+    userName: { required },
     address: { required },
   },
 
@@ -87,21 +113,35 @@ export default {
       }
       touchMap.set($v, setTimeout($v.$touch, 1000));
     },
-    submit() {
+    requireErrors(field) {
+      const errors = [];
+      if (!field.$dirty) return errors;
+      !field.required && errors.push("This field is required");
+      return errors;
+    },
+    async submit() {
       this.$v.$touch();
-      HTTP.post("/user/sign-up", {
-        email: this.name,
-        password: this.pass,
-        fullName: this.full,
-        phone: this.phone,
-        address: this.address,
-      }).then((res) => {
-        if (res.data.code === 200) {
-          this.$router.push("/");
-        } else {
-          alert("Đăng ký thất bại");
-        }
-      });
+      if (this.email && this.pass && this.address && this.userName && this.last && this.first && this.phone) {
+        await HTTP.post("/register", {
+          username: this.userName,
+          password: this.pass,
+          ho: this.last,
+          ten: this.first,
+          gioitinh: this.gender,
+          sdt: this.phone,
+          email: this.email,
+          diachi: this.address,
+        }).then((res) => {
+          if (res.status === 200) {
+            this.$router.push("/");
+          } else {
+            alert("Đăng ký thất bại");
+          }
+        });
+      }
+      {
+            alert("Vui lòng điền đủ các trường bắt buộc");
+          }
     },
     login() {
       this.$router.push("/");
@@ -110,11 +150,14 @@ export default {
   data() {
     return {
       showPassword: false,
-      name: "",
+      email: "",
       pass: "",
       address: "",
-      full: "",
+      last: "",
+      first: "",
+      userName: "",
       phone: "",
+      gender: 0,
     };
   },
   computed: {
@@ -128,27 +171,9 @@ export default {
     },
     emailErrors() {
       const errors = [];
-      if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.email && errors.push("Must be valid e-mail");
-      !this.$v.name.required && errors.push("E-mail is required");
-      return errors;
-    },
-    phoneErrors() {
-      const errors = [];
-      if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.required && errors.push("Phone is required");
-      return errors;
-    },
-    fullErrors() {
-      const errors = [];
-      if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.required && errors.push("Full name is required");
-      return errors;
-    },
-    addressErrors() {
-      const errors = [];
-      if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.required && errors.push("Address is required");
+      if (!this.$v.email.$dirty) return errors;
+      !this.$v.email.email && errors.push("Must be valid e-mail");
+      !this.$v.email.required && errors.push("E-mail is required");
       return errors;
     },
   },
